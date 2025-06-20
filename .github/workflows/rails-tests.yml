@@ -12,16 +12,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      # No necesitamos base de datos externa porque usamos SQLite en memoria
-
     steps:
       - uses: actions/checkout@v3
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3 # Cambia por la versión que usas
+          ruby-version: 3.3.1
 
       - name: Install dependencies
         run: |
@@ -32,7 +29,7 @@ jobs:
         env:
           RAILS_ENV: test
         run: |
-          # Prepara las migraciones
+          mkdir -p storage
+          bin/rails db:create
           bin/rails db:migrate
-          # Corre los tests
           bin/rails test
