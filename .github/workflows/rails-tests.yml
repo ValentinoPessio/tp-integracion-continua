@@ -1,0 +1,38 @@
+name: Run Rails tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      # No necesitamos base de datos externa porque usamos SQLite en memoria
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3 # Cambia por la versión que usas
+
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          bundle install --jobs 4 --retry 3
+
+      - name: Prepare database and run tests
+        env:
+          RAILS_ENV: test
+        run: |
+          # Prepara las migraciones
+          bin/rails db:migrate
+          # Corre los tests
+          bin/rails test
