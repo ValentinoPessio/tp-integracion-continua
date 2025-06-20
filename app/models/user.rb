@@ -15,6 +15,8 @@ class User < ApplicationRecord
   validate :fecha_nacimiento_valida
   validate :cuit_valido
   validate :tarjeta_credito_valida
+  validate :direccion_valida
+  validate :sexo_valido
 
   def email_valido
     errors.add(:email, "no es válido") unless email.match?(EMAIL_REGEX)
@@ -23,6 +25,14 @@ class User < ApplicationRecord
   def telefono_argentino_valido
     clean_phone = telefono.gsub(/\s+/, '') if telefono
     errors.add(:telefono, "no es válido") unless clean_phone.match?(ARG_PHONE_REGEX)
+  end
+
+  def sexo_valido
+    if sexo.present?
+      errors.add(:sexo, "debe ser 'masculino', 'femenino' o 'otro'") unless ["masculino", "femenino", "otro"].include?(sexo.downcase)
+    else
+      errors.add(:sexo, "no puede estar en blanco")
+    end
   end
 
   def dni_valido
@@ -68,6 +78,15 @@ class User < ApplicationRecord
       errors.add(:tarjeta_credito, "no es válida") unless tarjeta_credito.match?(TARJETA_REGEX)
     else
       errors.add(:tarjeta_credito, "no puede estar en blanco")
+    end
+  end
+
+  def direccion_valida
+    if direccion.present?
+      errors.add(:direccion, "no puede estar en blanco") if direccion.blank?
+      errors.add(:direccion, "debe tener al menos 6 caracteres") if direccion.length < 6
+    else
+      errors.add(:direccion, "no puede estar en blanco")
     end
   end
 end

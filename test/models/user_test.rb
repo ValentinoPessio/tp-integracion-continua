@@ -10,7 +10,10 @@ class UserTest < ActiveSupport::TestCase
       nombre: "Juan Perez",
       password: "Seguro1235",
       fecha_nacimiento: "1990-01-01",
-      cuit: "20-12345678-9"
+      cuit: "20-12345678-9",
+      tarjeta_credito: "1234-5678-9012-3456",
+      direccion: "Calle Falsa 123, Ciudad, Provincia",
+      sexo: "masculino"
     }
   end
 
@@ -22,7 +25,10 @@ class UserTest < ActiveSupport::TestCase
       nombre: "Juan123",
       password: "1234",
       fecha_nacimiento: "1899-12-31",
-      cuit: "12345678"
+      cuit: "12345678",
+      tarjeta_credito: "1234-5678-9012-3456-7890",
+      direccion: "calle",
+      sexo: ""
     }
   end
 
@@ -36,6 +42,18 @@ class UserTest < ActiveSupport::TestCase
     refute user.valid?, "Se esperaba  usuario con email inválido "
     assert_includes user.errors[:email], "no es válido"
   end
+
+  def test_sexo_valido
+    user = User.new(usuario_valido)
+    assert user.valid?, "Se esperaba usuario con sexo válido"
+  end
+
+  def test_sexo_invalido
+    user = User.new(usuario_invalido.merge(sexo: "invalido"))
+    refute user.valid?, "Se esperaba usuario con sexo inválido"
+    assert_includes user.errors[:sexo], "debe ser 'masculino', 'femenino' o 'otro'"
+  end
+
 
   def test_dni_valido
     user = User.new(usuario_valido)
@@ -128,14 +146,31 @@ class UserTest < ActiveSupport::TestCase
   end
 
   def test_tarjeta_credito_valida
-    user = User.new(usuario_valido.merge(tarjeta_credito: "1234-5678-9012-3456"))
+    user = User.new(usuario_valido)
     assert user.valid?, "Se esperaba usuario con tarjeta de crédito válida"
   end
 
   def test_tarjeta_credito_invalida
-    user = User.new(usuario_invalido.merge(tarjeta_credito: "1234-5678-9012-3456"))
+    user = User.new(usuario_invalido)
     refute user.valid?, "Se esperaba usuario con tarjeta de crédito inválida"
     assert_includes user.errors[:tarjeta_credito], "no es válida"
+  end
+
+  def test_direccion_valida
+    user = User.new(usuario_valido)
+    assert user.valid?, "Se esperaba usuario con dirección válida"
+  end
+
+  def test_direccion_invalida
+    user = User.new(usuario_invalido)
+    refute user.valid?, "Se esperaba usuario con dirección inválida"
+    assert_includes user.errors[:direccion], "debe tener al menos 6 caracteres"
+  end
+
+  def test_direccion_en_blanco
+    user = User.new(usuario_valido.merge(direccion: ""))
+    refute user.valid?, "Se esperaba usuario con dirección en blanco"
+    assert_includes user.errors[:direccion], "no puede estar en blanco"
   end
 
 end

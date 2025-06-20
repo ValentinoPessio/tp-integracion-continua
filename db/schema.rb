@@ -20,6 +20,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_20_144505) do
     t.string "cuit"
     t.string "tarjeta_credito"
     t.string "nombre"
+    t.string "direccion"
+    t.string "sexo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -9,6 +9,8 @@ class CreateUsers < ActiveRecord::Migration[7.1]
       t.string :cuit
       t.string :tarjeta_credito
       t.string :nombre
+      t.string :direccion
+      t.string :sexo
       t.timestamps
     end
   end
