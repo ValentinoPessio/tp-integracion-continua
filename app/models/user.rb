@@ -4,6 +4,8 @@ class User < ApplicationRecord
   DNI_REGEX = /\A\d{8}\z/
   NOMBRE_REGEX = /\A[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+\z/
   PASSWORD_REGEX = /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}\z/
+  CUIT_REGEX = /\A\d{2}-\d{8}-\d{1}\z/
+  TARJETA_REGEX = /\A\d{4}-?\d{4}-?\d{4}-?\d{4}\z/
 
   validate :email_valido
   validate :telefono_argentino_valido
@@ -11,6 +13,8 @@ class User < ApplicationRecord
   validate :nombre_valido
   validate :password_valido
   validate :fecha_nacimiento_valida
+  validate :cuit_valido
+  validate :tarjeta_credito_valida
 
   def email_valido
     errors.add(:email, "no es válido") unless email.match?(EMAIL_REGEX)
@@ -48,6 +52,22 @@ class User < ApplicationRecord
       end
     else
       errors.add(:fecha_nacimiento, "no puede estar en blanco")
+    end
+  end
+
+  def cuit_valido
+    if cuit.present?
+      errors.add(:cuit, "no es válido") unless cuit.match?(CUIT_REGEX)
+    else
+      errors.add(:cuit, "no puede estar en blanco")
+    end
+  end
+
+  def tarjeta_credito_valida
+    if tarjeta_credito.present?
+      errors.add(:tarjeta_credito, "no es válida") unless tarjeta_credito.match?(TARJETA_REGEX)
+    else
+      errors.add(:tarjeta_credito, "no puede estar en blanco")
     end
   end
 end

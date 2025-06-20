@@ -9,7 +9,8 @@ class UserTest < ActiveSupport::TestCase
       dni: "12345678",
       nombre: "Juan Perez",
       password: "Seguro1235",
-      fecha_nacimiento: "1990-01-01"
+      fecha_nacimiento: "1990-01-01",
+      cuit: "20-12345678-9"
     }
   end
 
@@ -20,7 +21,8 @@ class UserTest < ActiveSupport::TestCase
       dni: "00000",
       nombre: "Juan123",
       password: "1234",
-      fecha_nacimiento: "1899-12-31"
+      fecha_nacimiento: "1899-12-31",
+      cuit: "12345678"
     }
   end
 
@@ -106,6 +108,34 @@ class UserTest < ActiveSupport::TestCase
     user = User.new(usuario_valido.merge(fecha_nacimiento: ""))
     refute user.valid?, "Se esperaba usuario con fecha de nacimiento en blanco"
     assert_includes user.errors[:fecha_nacimiento], "no puede estar en blanco"
+  end
+
+  def test_cuit_valido
+    user = User.new(usuario_valido)
+    assert user.valid?, "Se esperaba usuario con CUIT válido"
+  end
+
+  def test_cuit_invalido
+    user = User.new(usuario_invalido)
+    refute user.valid?, "Se esperaba usuario con CUIT inválido"
+    assert_includes user.errors[:cuit], "no es válido"
+  end
+
+  def test_cuit_en_blanco
+    user = User.new(usuario_valido.merge(cuit: ""))
+    refute user.valid?, "Se esperaba usuario con CUIT en blanco"
+    assert_includes user.errors[:cuit], "no puede estar en blanco"
+  end
+
+  def test_tarjeta_credito_valida
+    user = User.new(usuario_valido.merge(tarjeta_credito: "1234-5678-9012-3456"))
+    assert user.valid?, "Se esperaba usuario con tarjeta de crédito válida"
+  end
+
+  def test_tarjeta_credito_invalida
+    user = User.new(usuario_invalido.merge(tarjeta_credito: "1234-5678-9012-3456"))
+    refute user.valid?, "Se esperaba usuario con tarjeta de crédito inválida"
+    assert_includes user.errors[:tarjeta_credito], "no es válida"
   end
 
 end
