@@ -18,6 +18,8 @@ class User < ApplicationRecord
   validate :direccion_valida
   validate :sexo_valido
 
+  # Cambios para probar github actions
+
   def email_valido
     errors.add(:email, "no es válido") unless email.match?(EMAIL_REGEX)
   end
